@@ -22,12 +22,14 @@ def webhook():
         for entry in data.get("entry", []):
             for change in entry.get("changes", []):
                 value = change.get("value", {})
-
-                if "comment_id" in value:
+                
+                # Check if it's an Instagram comment webhook
+                if change.get("field") == "comments" and "id" in value:
                     comment = {
-                        "id": value["comment_id"],
+                        "id": value["id"],
                         "text": value.get("text", "")
                     }
+                    print("Received comment via webhook:", comment["text"])
                     process_comment(comment)
 
     except Exception as e:
